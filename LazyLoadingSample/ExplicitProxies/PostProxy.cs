@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using LazyEntityFrameworkCore.ChangeTracking.Internal;
+using LazyEntityFrameworkCore.Lazy;
 using LazyLoadingSample.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
@@ -9,27 +11,13 @@ namespace LazyLoadingSample.ExplicitProxies
 {
     public class PostProxy : Post
     {
-        private readonly BloggingContext _context;
-        private readonly LazyStateManager _stateManager;
+        private readonly LazyReference<Blog> _localBlog;
 
         public PostProxy(DbContext context)
         {
-            _context = (BloggingContext)context;
-            _stateManager = (LazyStateManager)context.GetService<IStateManager>();
+            _localBlog = new LazyReference<Blog>(context, b => b.BlogId == BlogId, () => base.Blog);
         }
 
-        private bool _blogLoaded = false;
-        public override Blog Blog
-        {
-            get
-            {
-                if (!_blogLoaded && !_stateManager.InTracking)
-                {
-                    _context.Blogs.Where(b => b.BlogId == BlogId).Load();
-                    _blogLoaded = true;
-                }
-                return base.Blog;
-            }
-        }
+        public override Blog Blog => _localBlog.Value;
     }
 }

@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0-*",
+  "description": "EFC Class Library",
+  "authors": [ "efremov" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+  "frameworks": {
+    "net451": {
+      "dependencies": {      }
+    },
+    "netstandard1.3": {
+      "imports": [
+        "dotnet5.4"
+      ],
+      "dependencies": {
+      }
+    }
+  },
+  "dependencies": {
+    "Microsoft.EntityFrameworkCore.SqlServer": "1.0.0-rc2-20051"
+  }
+}
