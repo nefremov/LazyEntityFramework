@@ -1,0 +1,32 @@
+{
+  "version": "1.0.0-*",
+  "description": "LazyLoadingSample2 Console Application",
+  "authors": [ "efremov" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+
+  "compilationOptions": {
+    "emitEntryPoint": true
+  },
+
+  "dependencies": {
+    "LazyEntityFrameworkCore": "1.0.0-*",
+  },
+
+  "commands": {
+    "LazyLoadingSample": "LazyLoadingSample"
+  },
+
+  "frameworks": {
+    "dnx451": {
+      "dependencies": {
+      },
+    },
+    "dnxcore50": {
+      "dependencies": {
+        "System.Console": "4.0.0-rc2-23826"
+      }
+    }
+  }
+}
