@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Internal;
 
-namespace LazyEntityFrameworkCore.Lazy
+namespace LazyEntityFrameworkCore.Encapsulation
 {
-    public class LazyDbSet<TEntity> : InternalDbSet<TEntity> where TEntity : class
+    public class EncapsulatedDbSet<TEntity> : InternalDbSet<TEntity> where TEntity : class
     {
-        public LazyDbSet(DbContext context) : base(context)
+        public EncapsulatedDbSet(DbContext context) : base(context)
         {
         }
 

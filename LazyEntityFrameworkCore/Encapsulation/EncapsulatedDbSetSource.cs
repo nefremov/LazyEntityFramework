@@ -5,12 +5,12 @@ using LazyEntityFrameworkCore.Lazy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 
-namespace LazyEntityFrameworkCore.Internal
+namespace LazyEntityFrameworkCore.Encapsulation
 {
-    public class LazyDbSetSource : IDbSetSource
+    public class EncapsulatedDbSetSource : IDbSetSource
     {
         private static readonly MethodInfo _genericCreate
-            = typeof(LazyDbSetSource).GetTypeInfo().GetDeclaredMethod(nameof(LazyDbSetSource.CreateConstructor));
+            = typeof(EncapsulatedDbSetSource).GetTypeInfo().GetDeclaredMethod(nameof(EncapsulatedDbSetSource.CreateConstructor));
 
         // Stores DbSet<T> objects
         private readonly ConcurrentDictionary<Type, Func<DbContext, object>> _cache
@@ -24,6 +24,6 @@ namespace LazyEntityFrameworkCore.Internal
 
         //[UsedImplicitly]
         private static Func<DbContext, object> CreateConstructor<TEntity>() where TEntity : class
-            => c => new LazyDbSet<TEntity>(c);
+            => c => new EncapsulatedDbSet<TEntity>(c);
     }
 }

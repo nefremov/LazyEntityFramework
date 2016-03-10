@@ -2,9 +2,9 @@ using LazyEntityFrameworkCore.Infrastructure.Internal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace LazyEntityFrameworkCore
+namespace LazyEntityFrameworkCore.Extensions
 {
-    public static class MaterializingSqlServerDbContextOptionsExtensions
+    public static class SqlServerDbContextOptionsExtensions
     {
         /// <summary>
         ///     Configures the context to connect to a Microsoft SQL Server database.

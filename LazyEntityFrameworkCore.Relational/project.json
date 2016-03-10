@@ -1,13 +1,14 @@
-{
+﻿{
   "version": "1.0.0-*",
-  "description": "EFC Class Library",
+  "description": "LazyEntityFrameworkCore.Relational Class Library",
   "authors": [ "efremov" ],
   "tags": [ "" ],
   "projectUrl": "",
   "licenseUrl": "",
+
   "frameworks": {
     "net451": {
-      "dependencies": {      }
+      "dependencies": { }
     },
     "netstandard1.3": {
       "imports": [
@@ -18,6 +19,7 @@
     }
   },
   "dependencies": {
-    "Microsoft.EntityFrameworkCore": "1.0.0-rc2-20121"
+    "Microsoft.EntityFrameworkCore.Relational": "1.0.0-rc2-20121",
+    "LazyEntityFrameworkCore": "1.0.0-*"
   }
 }

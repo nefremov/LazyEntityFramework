@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using LazyEntityFrameworkCore;
 using LazyEntityFrameworkCore.Lazy.Proxy;
 using LazyEntityFrameworkCore.Encapsulation.Builders;
+using LazyEntityFrameworkCore.Extensions;
 using LazyLoadingSample.Builders;
 using LazyLoadingSample.ExplicitProxies;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +11,6 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
-
 namespace LazyLoadingSample.Model
 {
     public class BloggingContext : DbContext
