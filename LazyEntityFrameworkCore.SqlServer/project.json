@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-*",
+  "version": "1.0.1-*",
   "description": "LazyEntityFrameworkCore.SqlServer Class Library",
   "authors": [ "efremov" ],
   "tags": [ "" ],
@@ -19,7 +19,7 @@
     }
   },
   "dependencies": {
-    "LazyEntityFrameworkCore.Relational": "1.0.0-*",
+    "LazyEntityFrameworkCore.Relational": "1.0.1-*",
     "Microsoft.EntityFrameworkCore.SqlServer": "1.0.0-rc2-20121"
   }
 }

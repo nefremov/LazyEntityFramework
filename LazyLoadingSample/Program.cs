@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using LazyEntityFrameworkCore.Infrastructure.Internal;
+using LazyEntityFrameworkCore.Extensions;
 using LazyLoadingSample.ExplicitProxies;
 using LazyLoadingSample.Model;
 using Microsoft.EntityFrameworkCore;
@@ -13,15 +14,11 @@ namespace LazyLoadingSample
         static void Main(string[] args)
         {
             var connectionString = @"Server=(localdb)\mssqllocaldb;Database=Ef7Tests;Trusted_Connection=True;";
-            DbContextOptionsBuilder<BloggingContext> optionsBuilder = new DbContextOptionsBuilder<BloggingContext>(new DbContextOptions<BloggingContext>());
-            var existing = optionsBuilder.Options.FindExtension<MaterializingSqlServerOptionsExtension>();
-            var extension = existing != null
-                ? new MaterializingSqlServerOptionsExtension(existing)
-                : new MaterializingSqlServerOptionsExtension();
-            extension.ConnectionString = connectionString;
-            ((IDbContextOptionsBuilderInfrastructure)optionsBuilder).AddOrUpdateExtension(extension);
+            var optionsBuilder = new DbContextOptionsBuilder();
+            optionsBuilder.UseSqlServerWithMaterialization(connectionString);
+            var options = optionsBuilder.Options;
 
-            using (var db = new BloggingContext(optionsBuilder.Options))
+            using (var db = new BloggingContext(options))
             {
                 db.Database.EnsureDeleted();
                 db.Database.EnsureCreated();
@@ -44,7 +41,7 @@ namespace LazyLoadingSample
             //    Console.WriteLine("{0} records saved to database", count);
             //}
 
-            using (var db = new BloggingContext(optionsBuilder.Options))
+            using (var db = new BloggingContext(options))
             {
                 db.ChangeTracker.AutoDetectChangesEnabled = true;
                 Blog blog = db.Blogs.First();
