@@ -16,7 +16,7 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "LazyEntityFrameworkCore.Sql
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "LazyEntityFrameworkCore.Relational", "LazyEntityFrameworkCore.Relational\LazyEntityFrameworkCore.Relational.xproj", "{3F05D4C2-7E67-4B36-A747-B9A17FA64DD9}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "LazyEntityFrameworkCore.InMemory", "LazyEntityFramework.InMemory\LazyEntityFrameworkCore.InMemory.xproj", "{7DF1C5FA-9EDB-4427-BA4E-D758E79A322E}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "LazyEntityFrameworkCore.InMemory", "LazyEntityFrameworkCore.InMemory\LazyEntityFrameworkCore.InMemory.xproj", "{7DF1C5FA-9EDB-4427-BA4E-D758E79A322E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
