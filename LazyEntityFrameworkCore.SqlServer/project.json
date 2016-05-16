@@ -1,5 +1,5 @@
 {
-  "version": "1.0.2-*",
+  "version": "1.0.3-*",
   "description": "LazyEntityFrameworkCore.SqlServer Class Library",
   "authors": [ "efremov" ],
   "tags": [ "" ],
@@ -8,6 +8,9 @@
 
   "frameworks": {
     "net451": {
+      "frameworkAssemblies": {
+        "System.Runtime": ""
+      },
       "dependencies": { }
     },
     "netstandard1.3": {
@@ -19,7 +22,7 @@
     }
   },
   "dependencies": {
-    "LazyEntityFrameworkCore.Relational": "1.0.1-*",
-    "Microsoft.EntityFrameworkCore.SqlServer": "1.0.0-rc2-20121"
+    "LazyEntityFrameworkCore.Relational": "1.0.3-*",
+    "Microsoft.EntityFrameworkCore.SqlServer": "1.0.0-rc3-20867"
   }
 }

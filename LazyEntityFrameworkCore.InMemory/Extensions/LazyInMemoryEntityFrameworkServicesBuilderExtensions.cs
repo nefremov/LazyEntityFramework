@@ -16,13 +16,11 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class LazyInMemoryEntityFrameworkServicesBuilderExtensions
+    public static class InMemoryServiceCollectionExtensions
     {
-        public static EntityFrameworkServicesBuilder AddInMemoryDatabaseLazy(this EntityFrameworkServicesBuilder builder)
+        public static IServiceCollection AddEntityFrameworkInMemoryDatabaseLazy(this IServiceCollection services)
         {
-            builder.AddInMemoryDatabase();
-            var services = builder.GetInfrastructure();
-
+            services.AddEntityFrameworkInMemoryDatabase();
             services.Replace(new ServiceDescriptor(typeof(IModelSource), typeof(MaterializingInMemoryModelSource), ServiceLifetime.Singleton));
             services.Replace(new ServiceDescriptor(typeof(InMemoryEntityQueryableExpressionVisitorFactory), typeof(MaterializingInMemoryEntityQueryableExpressionVisitorFactory), ServiceLifetime.Scoped));
             services.Replace(new ServiceDescriptor(typeof(IStateManager), typeof(LazyStateManager), ServiceLifetime.Scoped));
@@ -31,7 +29,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IProxyBuilder, ProxyBuilder>();
             services.AddSingleton<IBuilderProvider, BuilderProvider>();
 
-            return builder;
+            return services;
         }
     }
 }

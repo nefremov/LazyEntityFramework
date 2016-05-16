@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using JetBrains.Annotations;
 using LazyEntityFrameworkCore.Lazy.Proxy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -20,13 +21,23 @@ namespace LazyEntityFrameworkCore.Metadata.Internal
             = new SortedDictionary<string, Navigation>(StringComparer.Ordinal);
 
         private IProxyBuilder _proxyBuilder;
+
+        private readonly FieldInfo _propertiesFieldInfo = typeof(EntityType).GetTypeInfo().GetDeclaredField("_properties");
+
+        private SortedDictionary<string, Property> _propertiesBase => (SortedDictionary<string, Property>)_propertiesFieldInfo.GetValue(this);
+
+
         public MaterializingEntityType(string name, Model model, ConfigurationSource configurationSource) : base(name, model, configurationSource)
+        {
+        }
+
+        public MaterializingEntityType(Type clrType, Model model, ConfigurationSource configurationSource) : base(clrType, model, configurationSource)
         {
         }
 
         public object CreateEntity(ValueBuffer valueBuffer)
         {
-            DbContext context = (DbContext) valueBuffer[valueBuffer.Count - 1];
+            DbContext context = (DbContext)valueBuffer[valueBuffer.Count - 1];
             if (_proxyBuilder == null)
             {
                 _proxyBuilder = context.GetInfrastructure().GetService<IProxyBuilder>();
@@ -43,7 +54,25 @@ namespace LazyEntityFrameworkCore.Metadata.Internal
             ForeignKey foreignKey,
             bool pointsToPrincipal)
         {
+            //Check.NotEmpty(name, nameof(name));
+            //Check.NotNull(foreignKey, nameof(foreignKey));
 
+            return AddNavigation(new PropertyIdentity(name), foreignKey, pointsToPrincipal);
+        }
+        public override Navigation AddNavigation(
+            [NotNull] PropertyInfo navigationProperty,
+            [NotNull] ForeignKey foreignKey,
+            bool pointsToPrincipal)
+        {
+            //Check.NotNull(navigationProperty, nameof(navigationProperty));
+            //Check.NotNull(foreignKey, nameof(foreignKey));
+
+            return AddNavigation(new PropertyIdentity(navigationProperty), foreignKey, pointsToPrincipal);
+        }
+
+        private Navigation AddNavigation(PropertyIdentity propertyIdentity, ForeignKey foreignKey, bool pointsToPrincipal)
+        {
+            var name = propertyIdentity.Name;
             var duplicateNavigation = FindNavigationsInHierarchy(name).FirstOrDefault();
             if (duplicateNavigation != null)
             {
@@ -74,14 +103,24 @@ namespace LazyEntityFrameworkCore.Metadata.Internal
             Debug.Assert((pointsToPrincipal ? foreignKey.DeclaringEntityType : foreignKey.PrincipalEntityType) == this,
                 "EntityType mismatch");
 
-            Navigation.IsCompatible(
-                name,
-                this,
-                pointsToPrincipal ? foreignKey.PrincipalEntityType : foreignKey.DeclaringEntityType,
-                !pointsToPrincipal && !foreignKey.IsUnique,
-                shouldThrow: true);
+            Navigation navigation = null;
+            var navigationProperty = propertyIdentity.Property;
+            if (ClrType != null)
+            {
+                Navigation.IsCompatible(
+                    propertyIdentity.Name,
+                    navigationProperty,
+                    this,
+                    pointsToPrincipal ? foreignKey.PrincipalEntityType : foreignKey.DeclaringEntityType,
+                    !pointsToPrincipal && !foreignKey.IsUnique,
+                    shouldThrow: true);
+                navigation = new BackableNavigation(navigationProperty, foreignKey);
+            }
+            else
+            {
+                navigation = new BackableNavigation(name, foreignKey);
+            }
 
-            var navigation = new BackableNavigation(name, foreignKey);
             _navigations.Add(name, navigation);
 
             PropertyMetadataChanged();
@@ -116,41 +155,105 @@ namespace LazyEntityFrameworkCore.Metadata.Internal
             => BaseType?.GetNavigations().Concat(_navigations.Values) ?? _navigations.Values;
 
 
-        private readonly FieldInfo _propertiesFieldInfo = typeof (EntityType).GetTypeInfo().GetDeclaredField("_properties");
-
-        private SortedDictionary<string, Property> _propertiesBase => (SortedDictionary<string, Property>)_propertiesFieldInfo.GetValue(this);
-
         public override Property AddProperty(
-    string name,
-    ConfigurationSource configurationSource = ConfigurationSource.Explicit,
-    bool runConventions = true)
-    {
-        var duplicateProperty = FindPropertiesInHierarchy(name).FirstOrDefault();
-        if (duplicateProperty != null)
+            string name,
+            Type propertyType = null,
+            bool? shadow = null,
+            ConfigurationSource configurationSource = ConfigurationSource.Explicit,
+            bool runConventions = true)
         {
-            throw new InvalidOperationException(CoreStrings.DuplicateProperty(
-                name, this.DisplayName(), duplicateProperty.DeclaringEntityType.DisplayName()));
+            //Check.NotNull(name, nameof(name));
+
+            ValidateCanAddProperty(name);
+
+            if (shadow != true)
+            {
+                var clrProperty = ClrType?.GetPropertiesInHierarchy(name).FirstOrDefault();
+                if (clrProperty != null)
+                {
+                    if (propertyType != null
+                        && propertyType != clrProperty.PropertyType)
+                    {
+                        throw new InvalidOperationException(CoreStrings.PropertyWrongClrType(
+                            name,
+                            this.DisplayName(),
+                            clrProperty.PropertyType.DisplayName(fullName: false),
+                            propertyType.DisplayName(fullName: false)));
+                    }
+
+                    return AddProperty(clrProperty, configurationSource, runConventions);
+                }
+
+                if (shadow == false)
+                {
+                    if (ClrType == null)
+                    {
+                        throw new InvalidOperationException(CoreStrings.ClrPropertyOnShadowEntity(name, this.DisplayName()));
+                    }
+
+                    throw new InvalidOperationException(CoreStrings.NoClrProperty(name, this.DisplayName()));
+                }
+            }
+
+            if (propertyType == null)
+            {
+                throw new InvalidOperationException(CoreStrings.NoPropertyType(name, this.DisplayName()));
+            }
+            return AddProperty(new BackableProperty(name, propertyType, this, configurationSource), runConventions);
+        }
+        public override Property AddProperty(
+            PropertyInfo propertyInfo,
+            ConfigurationSource configurationSource = ConfigurationSource.Explicit,
+            bool runConventions = true)
+        {
+            //Check.NotNull(propertyInfo, nameof(propertyInfo));
+
+            ValidateCanAddProperty(propertyInfo.Name);
+
+            if (ClrType == null)
+            {
+                throw new InvalidOperationException(CoreStrings.ClrPropertyOnShadowEntity(propertyInfo.Name, this.DisplayName()));
+            }
+
+            if (propertyInfo.DeclaringType == null
+                || !propertyInfo.DeclaringType.GetTypeInfo().IsAssignableFrom(ClrType.GetTypeInfo()))
+            {
+                throw new ArgumentException(CoreStrings.PropertyWrongEntityClrType(
+                    propertyInfo.Name, this.DisplayName(), propertyInfo.DeclaringType?.Name));
+            }
+
+            return AddProperty(new BackableProperty(propertyInfo, this, configurationSource), runConventions);
         }
 
-        var duplicateNavigation = FindNavigationsInHierarchy(name).FirstOrDefault();
-        if (duplicateNavigation != null)
+        private Property AddProperty(Property property, bool runConventions)
         {
-            throw new InvalidOperationException(CoreStrings.ConflictingNavigation(name, this.DisplayName(),
-                duplicateNavigation.DeclaringEntityType.DisplayName()));
+            _propertiesBase.Add(property.Name, property);
+
+            PropertyMetadataChanged();
+
+            if (runConventions)
+            {
+                property = Model.ConventionDispatcher.OnPropertyAdded(property.Builder)?.Metadata;
+            }
+
+            return property;
         }
 
-        var property = new BackableProperty(name, this, configurationSource);
-
-        _propertiesBase.Add(name, property);
-
-        PropertyMetadataChanged();
-
-        if (runConventions)
+        private void ValidateCanAddProperty(string name)
         {
-            property = (BackableProperty)Model.ConventionDispatcher.OnPropertyAdded(property.Builder)?.Metadata;
-        }
+            var duplicateProperty = FindPropertiesInHierarchy(name).FirstOrDefault();
+            if (duplicateProperty != null)
+            {
+                throw new InvalidOperationException(CoreStrings.DuplicateProperty(
+                    name, this.DisplayName(), duplicateProperty.DeclaringEntityType.DisplayName()));
+            }
 
-        return property;
-    }
+            var duplicateNavigation = FindNavigationsInHierarchy(name).FirstOrDefault();
+            if (duplicateNavigation != null)
+            {
+                throw new InvalidOperationException(CoreStrings.ConflictingNavigation(name, this.DisplayName(),
+                    duplicateNavigation.DeclaringEntityType.DisplayName()));
+            }
+        }
     }
 }

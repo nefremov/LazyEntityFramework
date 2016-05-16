@@ -1,5 +1,5 @@
-﻿{
-  "version": "1.0.2-*",
+{
+  "version": "1.0.3-*",
   "description": "LazyEntityFrameworkCore.InMemory Class Library",
   "authors": [ "efremov" ],
   "tags": [ "" ],
@@ -8,18 +8,21 @@
 
   "frameworks": {
     "net451": {
+      "frameworkAssemblies": {
+        "System.Runtime": ""
+      },
       "dependencies": { }
     },
     "netstandard1.3": {
       "imports": [
-        "dotnet5.4"
+        "portable-net452+win81"
       ],
       "dependencies": {
       }
     }
   },
   "dependencies": {
-    "Microsoft.EntityFrameworkCore.InMemory": "1.0.0-rc2-20121",
-    "LazyEntityFrameworkCore": "1.0.1-*"
+    "LazyEntityFrameworkCore": "1.0.3-*",
+    "Microsoft.EntityFrameworkCore.InMemory": "1.0.0-rc3-20867"
   }
 }

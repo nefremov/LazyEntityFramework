@@ -17,10 +17,9 @@ namespace LazyEntityFrameworkCore.Infrastructure.Internal
     {
         public MaterializingSqlServerOptionsExtension() { }
         public MaterializingSqlServerOptionsExtension(SqlServerOptionsExtension from) : base(from) { }
-        public override void ApplyServices(EntityFrameworkServicesBuilder builder)
+        public override void ApplyServices(IServiceCollection services)
         {
-            builder.AddSqlServer();
-            var services = builder.GetInfrastructure();
+            services.AddEntityFrameworkSqlServer();
             services.Replace(new ServiceDescriptor(typeof(IModelSource), typeof(MaterializingSqlServerModelSource), ServiceLifetime.Singleton));
             services.Replace(new ServiceDescriptor(typeof(RelationalEntityQueryableExpressionVisitorFactory), typeof(MaterializingRelationalEntityQueryableExpressionVisitorFactory), ServiceLifetime.Scoped));
             services.Replace(new ServiceDescriptor(typeof(IStateManager), typeof(LazyStateManager), ServiceLifetime.Scoped));
