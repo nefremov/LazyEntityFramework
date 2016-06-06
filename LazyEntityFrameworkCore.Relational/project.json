@@ -1,5 +1,5 @@
 {
-  "version": "1.0.2-*",
+  "version": "1.0.4-*",
   "description": "LazyEntityFrameworkCore.Relational Class Library",
   "authors": [ "efremov" ],
 
@@ -12,6 +12,6 @@
   },
   "dependencies": {
     "Microsoft.EntityFrameworkCore.Relational": "1.0.0-rc3-21233",
-    "LazyEntityFrameworkCore": "1.0.2-*"
+    "LazyEntityFrameworkCore": "1.0.4-*"
   }
 }

@@ -18,7 +18,7 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "LazyEntityFrameworkCore.Rel
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "LazyEntityFrameworkCore.InMemory", "LazyEntityFrameworkCore.InMemory\LazyEntityFrameworkCore.InMemory.xproj", "{7DF1C5FA-9EDB-4427-BA4E-D758E79A322E}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "LazyEntityFrameworkCore.Shared", "LazyEntityFramework.Shared\LazyEntityFrameworkCore.Shared.xproj", "{5EF0C3EA-19B6-4B60-8256-856CB1F81931}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "LazyEntityFrameworkCore.Shared", "LazyEntityFrameworkCore.Shared\LazyEntityFrameworkCore.Shared.xproj", "{5EF0C3EA-19B6-4B60-8256-856CB1F81931}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
