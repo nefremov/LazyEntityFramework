@@ -1,28 +1,20 @@
 {
-  "version": "1.0.3-*",
+  "version": "1.0.2-*",
   "description": "LazyEntityFrameworkCore.InMemory Class Library",
   "authors": [ "efremov" ],
-  "tags": [ "" ],
-  "projectUrl": "",
-  "licenseUrl": "",
 
   "frameworks": {
     "net451": {
-      "frameworkAssemblies": {
-        "System.Runtime": ""
-      },
       "dependencies": { }
     },
-    "netstandard1.3": {
-      "imports": [
-        "portable-net452+win81"
-      ],
+    "netstandard1.5": {
+      "imports": [ "dnxcore50", "portable-net45+win8" ],
       "dependencies": {
       }
     }
   },
   "dependencies": {
-    "LazyEntityFrameworkCore": "1.0.3-*",
-    "Microsoft.EntityFrameworkCore.InMemory": "1.0.0-rc3-20867"
+    "Microsoft.EntityFrameworkCore.InMemory": "1.0.0-rc3-21233",
+    "LazyEntityFrameworkCore": "1.0.2-*"
   }
 }

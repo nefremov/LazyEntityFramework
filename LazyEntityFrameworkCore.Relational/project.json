@@ -1,25 +1,17 @@
 {
-  "version": "1.0.3-*",
+  "version": "1.0.2-*",
   "description": "LazyEntityFrameworkCore.Relational Class Library",
   "authors": [ "efremov" ],
-  "tags": [ "" ],
-  "projectUrl": "",
-  "licenseUrl": "",
 
   "frameworks": {
     "net451": {
-      "dependencies": { }
     },
-    "netstandard1.3": {
-      "imports": [
-        "dotnet5.4"
-      ],
-      "dependencies": {
-      }
+    "netstandard1.5": {
+      "imports": [ "dnxcore50", "portable-net45+win8" ]
     }
   },
   "dependencies": {
-    "LazyEntityFrameworkCore": "1.0.3-*",
-    "Microsoft.EntityFrameworkCore.Relational": "1.0.0-rc3-20867"
+    "Microsoft.EntityFrameworkCore.Relational": "1.0.0-rc3-21233",
+    "LazyEntityFrameworkCore": "1.0.2-*"
   }
 }

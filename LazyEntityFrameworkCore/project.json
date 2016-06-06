@@ -1,31 +1,25 @@
 {
-  "version": "1.0.3-*",
+  "version": "1.0.2-*",
   "description": "EFC Class Library",
   "authors": [ "efremov" ],
-  "tags": [ "" ],
-  "projectUrl": "",
-  "licenseUrl": "",
+
   "frameworks": {
     "net451": {
       "frameworkAssemblies": {
-        "System.ComponentModel": ""
-      },
-      "dependencies": {
+        "System.ComponentModel.DataAnnotations": "",
+        "System.Runtime": {
+          "type": "build"
+        }
       }
     },
-    "netstandard1.3": {
-      "imports": [
-        "dotnet5.4"
-      ],
+    "netstandard1.5": {
+      "imports": [ "dnxcore50", "portable-net45+win8" ],
       "dependencies": {
       }
     }
   },
   "dependencies": {
-    "LazyEntityFramework.Shared": "1.0.3-*",
-    "Microsoft.EntityFrameworkCore": "1.0.0-rc3-20867",
-    "System.Diagnostics.Debug": "4.0.11-rc2-24027",
-    "System.Reflection": "4.1.0-rc2-24027",
-    "System.ComponentModel": "4.0.1-rc2-24027"
+    "Microsoft.EntityFrameworkCore": "1.0.0-rc3-21233",
+    "System.ComponentModel": "4.0.1-rc3-24201-00"
   }
 }

@@ -20,6 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
          public static IServiceCollection AddEntityFrameworkSqlServerLazy(this IServiceCollection services)
         {
             services.AddEntityFrameworkSqlServer();
+
             services.Replace(new ServiceDescriptor(typeof(IModelSource), typeof(MaterializingSqlServerModelSource), ServiceLifetime.Singleton));
             services.Replace(new ServiceDescriptor(typeof(RelationalEntityQueryableExpressionVisitorFactory), typeof(MaterializingRelationalEntityQueryableExpressionVisitorFactory), ServiceLifetime.Scoped));
             services.Replace(new ServiceDescriptor(typeof(IStateManager), typeof(LazyStateManager), ServiceLifetime.Scoped));

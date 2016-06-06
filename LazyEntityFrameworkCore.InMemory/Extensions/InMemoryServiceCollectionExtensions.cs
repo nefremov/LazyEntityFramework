@@ -21,6 +21,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddEntityFrameworkInMemoryDatabaseLazy(this IServiceCollection services)
         {
             services.AddEntityFrameworkInMemoryDatabase();
+
             services.Replace(new ServiceDescriptor(typeof(IModelSource), typeof(MaterializingInMemoryModelSource), ServiceLifetime.Singleton));
             services.Replace(new ServiceDescriptor(typeof(InMemoryEntityQueryableExpressionVisitorFactory), typeof(MaterializingInMemoryEntityQueryableExpressionVisitorFactory), ServiceLifetime.Scoped));
             services.Replace(new ServiceDescriptor(typeof(IStateManager), typeof(LazyStateManager), ServiceLifetime.Scoped));
