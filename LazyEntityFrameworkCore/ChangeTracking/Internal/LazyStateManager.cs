@@ -37,7 +37,7 @@ namespace LazyEntityFrameworkCore.ChangeTracking.Internal
             IModel model, 
             IDatabase database,
             IConcurrencyDetector concurrencyDetector,
-            DbContext context) 
+            ICurrentDbContext context) 
             : base(factory, subscriber, notifier, valueGeneration, model, database, concurrencyDetector, context)
         {
             _factory = factory;
@@ -73,7 +73,7 @@ namespace LazyEntityFrameworkCore.ChangeTracking.Internal
             return entry;
         }
         public bool InTracking { get; set; }
-        public override InternalEntityEntry StartTrackingFromQuery(IEntityType entityType, object entity, ValueBuffer valueBuffer)
+        public override InternalEntityEntry StartTrackingFromQuery(IEntityType baseEntityType, object entity, ValueBuffer valueBuffer)
         {
             InTracking = true;
             try
@@ -84,11 +84,17 @@ namespace LazyEntityFrameworkCore.ChangeTracking.Internal
                     return existingEntry;
                 }
 
-                var newEntry = _factory.Create(this, entityType, entity, valueBuffer);
+                var clrType = entity.GetType();
+
+                var newEntry = _factory.Create(this,
+                    baseEntityType.ClrType == clrType
+                        ? baseEntityType
+                        : _model.FindEntityType(clrType),
+                    entity, valueBuffer);
 
                 _subscriber.SnapshotAndSubscribe(newEntry);
 
-                foreach (var key in entityType.GetKeys())
+                foreach (var key in baseEntityType.GetKeys())
                 {
                     GetOrCreateIdentityMap(key).AddOrUpdate(newEntry);
                 }
@@ -256,13 +262,16 @@ namespace LazyEntityFrameworkCore.ChangeTracking.Internal
             danglers.Add(Tuple.Create(navigation, referencedFromEntry));
         }
 
-        public override IEnumerable<Tuple<INavigation, InternalEntityEntry>> GetRecordedReferers(object referencedEntity)
+        public override IEnumerable<Tuple<INavigation, InternalEntityEntry>> GetRecordedReferers(object referencedEntity, bool clear)
         {
             IList<Tuple<INavigation, InternalEntityEntry>> danglers;
             if (_referencedUntrackedEntities.HasValue
                 && _referencedUntrackedEntities.Value.TryGetValue(referencedEntity, out danglers))
             {
-                _referencedUntrackedEntities.Value.Remove(referencedEntity);
+                if (clear)
+                {
+                    _referencedUntrackedEntities.Value.Remove(referencedEntity);
+                }
                 return danglers;
             }
 

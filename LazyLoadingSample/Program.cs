@@ -15,7 +15,7 @@ namespace LazyLoadingSample
         {
             var connectionString = @"Server=(localdb)\mssqllocaldb;Database=Ef7Tests;Trusted_Connection=True;";
             var optionsBuilder = new DbContextOptionsBuilder();
-            optionsBuilder.UseSqlServerWithMaterialization(connectionString);
+            optionsBuilder.UseSqlServerLazy(connectionString);
             var options = optionsBuilder.Options;
 
             using (var db = new BloggingContext(options))

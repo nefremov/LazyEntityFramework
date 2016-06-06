@@ -19,17 +19,9 @@ namespace LazyEntityFrameworkCore.Infrastructure.Internal
         public MaterializingInMemoryOptionsExtension(InMemoryOptionsExtension copyFrom) : base (copyFrom)
         {
         }
-        public override void ApplyServices(EntityFrameworkServicesBuilder builder)
+        public override void ApplyServices(IServiceCollection services)
         {
-            builder.AddInMemoryDatabase();
-            var services = builder.GetInfrastructure();
-            services.Replace(new ServiceDescriptor(typeof(IModelSource), typeof(MaterializingInMemoryModelSource), ServiceLifetime.Singleton));
-            services.Replace(new ServiceDescriptor(typeof(InMemoryEntityQueryableExpressionVisitorFactory), typeof(MaterializingInMemoryEntityQueryableExpressionVisitorFactory), ServiceLifetime.Scoped));
-            services.Replace(new ServiceDescriptor(typeof(IStateManager), typeof(LazyStateManager), ServiceLifetime.Scoped));
-            services.Replace(new ServiceDescriptor(typeof(IDbSetSource), typeof(EncapsulatedDbSetSource), ServiceLifetime.Singleton));
-            services.AddSingleton<InMemoryModelSource, MaterializingInMemoryModelSource>();
-            services.AddSingleton<IProxyBuilder, ProxyBuilder>();
-            services.AddSingleton<IBuilderProvider, BuilderProvider>();
+            services.AddEntityFrameworkInMemoryDatabaseLazy();
         }
     }
 }

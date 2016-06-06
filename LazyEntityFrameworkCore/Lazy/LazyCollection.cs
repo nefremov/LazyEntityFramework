@@ -11,6 +11,7 @@ using LazyEntityFrameworkCore.Encapsulation.Builders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -170,8 +171,8 @@ namespace LazyEntityFrameworkCore.Lazy
 
         public IBuilder<T> GetBuilder()
         {
-            DbContext context = _Set.GetInfrastructure().GetService<DbContext>();
-            IBuilder<T> builder = _Set.GetInfrastructure().GetService<IBuilderProvider>().GetBuilder<T>(context);
+            ICurrentDbContext context = _Set.GetInfrastructure().GetService<ICurrentDbContext>();
+            IBuilder<T> builder = _Set.GetInfrastructure().GetService<IBuilderProvider>().GetBuilder<T>(context.Context);
             if (_OwnerMemberExpression != null)
             {
                 builder.Set(_OwnerMemberExpression, _Owner);

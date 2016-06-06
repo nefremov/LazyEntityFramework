@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -11,37 +12,49 @@ namespace LazyEntityFrameworkCore.Metadata.Internal
     public class MaterializingModel : Model, IMutableModel
     {
         private readonly SortedDictionary<string, EntityType> _entityTypes = new SortedDictionary<string, EntityType>();
+        private readonly IDictionary<Type, EntityType> _clrTypeMap
+            = new Dictionary<Type, EntityType>();
+
 
         public MaterializingModel(ConventionSet conventions) : base(conventions)
         {
         }
 
-        public override EntityType AddEntityType(string name, ConfigurationSource configurationSource = ConfigurationSource.Explicit)
-        {
-            var entityType = AddEntityTypeWithoutConventions(name, configurationSource);
-            return ConventionDispatcher.OnEntityTypeAdded(entityType.Builder)?.Metadata;
-        }
-
-        public override EntityType AddEntityType(Type type, ConfigurationSource configurationSource = ConfigurationSource.Explicit)
-        {
-            var entityType = AddEntityTypeWithoutConventions(type.DisplayName(), configurationSource);
-            entityType.ClrType = type;
-            return ConventionDispatcher.OnEntityTypeAdded(entityType.Builder)?.Metadata;
-        }
-
-        private EntityType AddEntityTypeWithoutConventions(string name, ConfigurationSource configurationSource)
+        public override EntityType AddEntityType(
+            string name,
+            // ReSharper disable once MethodOverloadWithOptionalParameter
+            ConfigurationSource configurationSource = ConfigurationSource.Explicit)
         {
             var entityType = new MaterializingEntityType(name, this, configurationSource);
-            var previousLength = _entityTypes.Count;
-            _entityTypes[name] = entityType;
 
+            return AddEntityType(entityType);
+        }
+
+        /// <summary>
+        ///     This API supports the Entity Framework Core infrastructure and is not intended to be used 
+        ///     directly from your code. This API may change or be removed in future releases.
+        /// </summary>
+        public override EntityType AddEntityType(
+            Type type,
+            ConfigurationSource configurationSource = ConfigurationSource.Explicit)
+        {
+            var entityType = new MaterializingEntityType(type, this, configurationSource);
+
+            _clrTypeMap[type] = entityType;
+            return AddEntityType(entityType);
+        }
+
+        private EntityType AddEntityType(EntityType entityType)
+        {
+            var previousLength = _entityTypes.Count;
+            _entityTypes[entityType.Name] = entityType;
             if (previousLength == _entityTypes.Count)
             {
                 throw new InvalidOperationException(CoreStrings.DuplicateEntityType(entityType.Name));
             }
-            return entityType;
-        }
 
+            return ConventionDispatcher.OnEntityTypeAdded(entityType.Builder)?.Metadata;
+        }
         IMutableEntityType IMutableModel.AddEntityType(string name) => AddEntityType(name);
 
         public override IEnumerable<EntityType> GetEntityTypes() => _entityTypes.Values;
@@ -52,6 +65,13 @@ namespace LazyEntityFrameworkCore.Metadata.Internal
             return _entityTypes.TryGetValue(name, out entityType)
                 ? entityType
                 : null;
+        }
+        public override EntityType FindEntityType(Type type)
+        {
+            EntityType entityType;
+            return _clrTypeMap.TryGetValue(type, out entityType)
+                ? entityType
+                : FindEntityType(type.DisplayName());
         }
         public override EntityType RemoveEntityType(Type type)
         {
@@ -77,7 +97,7 @@ namespace LazyEntityFrameworkCore.Metadata.Internal
                 throw new InvalidOperationException(
                     CoreStrings.EntityTypeInUseByForeignKey(
                         entityType.DisplayName(),
-                        "{" + string.Join(", ", referencingForeignKey.Properties.Select(p => "'" + p.Name + "'")) + "}",
+                        MaterializingEntityType.Format(referencingForeignKey.Properties),
                         referencingForeignKey.DeclaringEntityType.DisplayName()));
             }
 
@@ -90,7 +110,13 @@ namespace LazyEntityFrameworkCore.Metadata.Internal
                         derivedEntityType.DisplayName()));
             }
 
+            if (entityType.ClrType != null)
+            {
+                _clrTypeMap.Remove(entityType.ClrType);
+            }
+
             var removed = _entityTypes.Remove(entityType.Name);
+            Debug.Assert(removed);
             entityType.Builder = null;
 
             return entityType;
