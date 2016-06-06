@@ -2,25 +2,20 @@
   "version": "1.0.3-*",
   "description": "LazyEntityFramework.Shared Class Library",
   "authors": [ "efremov" ],
-  "tags": [ "" ],
-  "projectUrl": "",
-  "licenseUrl": "",
   "shared": "CodeAnnotations.cs",
   "frameworks": {
     "net451": {
       "dependencies": {
       }
     },
-    "netstandard1.3": {
-      "imports": [
-        "dotnet5.4"
-      ],
+    "netstandard1.5": {
+      "imports": [ "dnxcore50", "portable-net45+win8" ],
       "dependencies": {
-        "System.Runtime": "4.1.0-rc2-24027",
-        "System.Runtime.InteropServices": "4.1.0-rc2-24027",
-        "System.Linq": "4.1.0-rc2-23819",
-        "System.Diagnostics.Debug": "4.0.11-rc2-23819",
-        "System.Reflection.Extensions": "4.0.1-rc2-23819"
+    "System.Linq": "4.1.0-rc3-24201-00",
+    "System.Diagnostics.Debug": "4.0.11-rc3-24201-00",
+    "System.Reflection.Extensions": "4.0.1-rc3-24201-00",
+    "System.Runtime": "4.1.0-rc3-24201-00",
+    "System.Runtime.InteropServices": "4.1.0-rc3-24201-00"
       }
     }
   },

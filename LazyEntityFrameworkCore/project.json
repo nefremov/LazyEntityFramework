@@ -15,11 +15,12 @@
     "netstandard1.5": {
       "imports": [ "dnxcore50", "portable-net45+win8" ],
       "dependencies": {
+        "System.ComponentModel": "4.0.1-rc3-24201-00"
       }
     }
   },
   "dependencies": {
-    "Microsoft.EntityFrameworkCore": "1.0.0-rc3-21233",
-    "System.ComponentModel": "4.0.1-rc3-24201-00"
+    "LazyEntityFramework.Shared": "1.0.3-*",
+    "Microsoft.EntityFrameworkCore": "1.0.0-rc3-21233"
   }
 }

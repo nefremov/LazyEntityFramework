@@ -2,7 +2,6 @@
   "version": "1.0.2-*",
   "description": "LazyLoadingSample2 Console Application",
   "authors": [ "efremov" ],
-  "tags": [ "" ],
 
   "buildOptions": {
     "emitEntryPoint": true
