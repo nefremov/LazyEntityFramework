@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using LazyEntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Query;
@@ -35,7 +36,7 @@ namespace LazyEntityFrameworkCore.Query.Internal
                 .SelectMany(t =>
                     t.Rows.Select(vs =>
                     {
-                        var context = queryContext.StateManager.Context;
+                        var context = queryContext.StateManager.Value.Context;
                         var vals = new List<object>(vs.Length + 1);
                         vals.AddRange(vs);
                         vals.Add(context);

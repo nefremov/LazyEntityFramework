@@ -5,22 +5,15 @@
 
   "frameworks": {
     "net451": {
-      "frameworkAssemblies": {
-        "System.ComponentModel.DataAnnotations": "",
-        "System.Runtime": {
-          "type": "build"
-        }
-      }
     },
-    "netstandard1.5": {
+    "netstandard1.6": {
       "imports": [ "dnxcore50", "portable-net45+win8" ],
       "dependencies": {
-        "System.ComponentModel": "4.0.1-rc3-24201-00"
       }
     }
   },
   "dependencies": {
     "LazyEntityFrameworkCore.Shared": "1.0.4-*",
-    "Microsoft.EntityFrameworkCore": "1.0.0-rc3-21233"
+    "Microsoft.EntityFrameworkCore": "1.1.0-alpha1-21500"
   }
 }

@@ -6,12 +6,12 @@
   "frameworks": {
     "net451": {
     },
-    "netstandard1.5": {
+    "netstandard1.6": {
       "imports": [ "dnxcore50", "portable-net45+win8" ]
     }
   },
   "dependencies": {
-    "Microsoft.EntityFrameworkCore.Relational": "1.0.0-rc3-21233",
-    "LazyEntityFrameworkCore": "1.0.4-*"
+    "LazyEntityFrameworkCore": "1.0.4-*",
+    "Microsoft.EntityFrameworkCore.Relational": "1.1.0-alpha1-21500"
   }
 }

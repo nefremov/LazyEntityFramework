@@ -25,22 +25,22 @@ namespace LazyEntityFrameworkCore.Metadata.Internal
 
         public override IEnumerable<EntityType> GetEntityTypes() => _entityTypes.Values;
 
-        public override EntityType AddEntityType([NotNull] string name, ConfigurationSource configurationSource = ConfigurationSource.Explicit)
+        public override EntityType AddEntityType([NotNull] string name, ConfigurationSource configurationSource = ConfigurationSource.Explicit, bool runConventions = true)
         {
             var entityType = new MaterializingEntityType(name, this, configurationSource);
 
-            return AddEntityType(entityType);
+            return AddEntityType(entityType, runConventions);
         }
 
-        public override EntityType AddEntityType([NotNull] Type type, ConfigurationSource configurationSource = ConfigurationSource.Explicit)
+        public override EntityType AddEntityType([NotNull] Type type, ConfigurationSource configurationSource = ConfigurationSource.Explicit, bool runConventions = true)
         {
             var entityType = new MaterializingEntityType(type, this, configurationSource);
 
             _clrTypeMap[type] = entityType;
-            return AddEntityType(entityType);
+            return AddEntityType(entityType, runConventions);
         }
 
-        private EntityType AddEntityType(EntityType entityType)
+        private EntityType AddEntityType(EntityType entityType, bool runConventions = true)
         {
             var previousLength = _entityTypes.Count;
             _entityTypes[entityType.Name] = entityType;
@@ -49,7 +49,11 @@ namespace LazyEntityFrameworkCore.Metadata.Internal
                 throw new InvalidOperationException(CoreStrings.DuplicateEntityType(entityType.Name));
             }
 
-            return ConventionDispatcher.OnEntityTypeAdded(entityType.Builder)?.Metadata;
+            if (runConventions)
+            {
+                return ConventionDispatcher.OnEntityTypeAdded(entityType.Builder)?.Metadata;
+            }
+            return entityType;
         }
 
         public override EntityType GetOrAddEntityType([NotNull] Type type)

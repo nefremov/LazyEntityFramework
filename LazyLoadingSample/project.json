@@ -1,5 +1,5 @@
 {
-  "version": "1.0.2-*",
+  "version": "1.0.4-*",
   "description": "LazyLoadingSample2 Console Application",
   "authors": [ "efremov" ],
 
@@ -7,9 +7,13 @@
     "emitEntryPoint": true
   },
 
+  "runtimes": {
+    "win81-x64": {}
+  },
+
   "dependencies": {
-    "Microsoft.NETCore.Platforms": "1.0.1-*",
-    "LazyEntityFrameworkCore.SqlServer": "1.0.2-*"
+    "LazyEntityFrameworkCore.SqlServer": "1.0.4-*",
+    "Microsoft.NETCore.Platforms": "1.0.1"
   },
 
   "commands": {
@@ -20,10 +24,7 @@
     "netcoreapp1.0": {
       "imports": [ "dnxcore50", "portable-net45+win8" ],
       "dependencies": {
-        "Microsoft.NETCore.App": {
-          "version": "1.0.0-*",
-          "type": "platform"
-        }
+        "Microsoft.NETCore.App": "1.0.0"
       }
     },
     "net451": {

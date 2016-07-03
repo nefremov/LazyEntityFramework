@@ -19,7 +19,7 @@ namespace LazyEntityFrameworkCore.Query.ExpressionVisitors.Internal
         {
             if (IsTrackingQuery)
             {
-                var entry = queryContext.StateManager.TryGetEntry(Key, valueBuffer, !AllowNullResult);
+                var entry = queryContext.StateManager.Value.TryGetEntry(Key, valueBuffer, !AllowNullResult);
 
                 if (entry != null)
                 {
@@ -31,7 +31,7 @@ namespace LazyEntityFrameworkCore.Query.ExpressionVisitors.Internal
             {
                 values.Add(valueBuffer[i]);
             }
-            values.Add(queryContext.StateManager.Context);
+            values.Add(queryContext.StateManager.Value.Context);
             ValueBuffer temp = new ValueBuffer(values);
             return (TEntity)Materializer(temp);
         }

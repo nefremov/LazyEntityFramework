@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -22,12 +23,12 @@ namespace LazyEntityFrameworkCore.ChangeTracking.Internal
         }
 
         public bool InTracking { get; set; }
-        public override InternalEntityEntry StartTrackingFromQuery(IEntityType baseEntityType, object entity, ValueBuffer valueBuffer)
+        public override InternalEntityEntry StartTrackingFromQuery(IEntityType baseEntityType, object entity, ValueBuffer valueBuffer, ISet<IForeignKey> handledForeignKeys)
         {
             InTracking = true;
             try
             {
-                return base.StartTrackingFromQuery(baseEntityType, entity, valueBuffer);
+                return base.StartTrackingFromQuery(baseEntityType, entity, valueBuffer, handledForeignKeys);
             }
             finally
             {
